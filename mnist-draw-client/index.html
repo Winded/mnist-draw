@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MNIST draw</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+
+    <script type="text/javascript" src="js/bundle.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>MNIST draw</h1>
+        </div>
+        <canvas id="paper" width="200" height="200" style="border:1px solid #ccc;"></canvas>
+        <div class="btn-group" role="group" aria-label="...">
+            <button id="clear-button" type="button" class="btn btn-default">Clear</button>
+            <button id="open-button" type="button" class="btn btn-default">Open PNG</button>
+            <button id="send-button" type="button" class="btn btn-default">Send</button>
+        </div>
+        <p id="result-container">Result: <b id="result"></b></p>
+    </div>
+</body>
+</html>
