@@ -50,34 +50,37 @@ class MNISTSession(object):
         print("MNIST accuracy = %s" % accuracy)
 
     def guess_number(self, input):
-        guess = self.session.run(tf.log(self.y), feed_dict={self.x: [input]})
+        guess = self.session.run(self.y, feed_dict={self.x: [input]})
+        guess = guess[0]
 
-        # Calculate average
-        avg = 0
-        for num in guess[0]:
-            avg += num
-        avg = avg / 10
-
-        # Find max and it's index
+        # Get maximum value and index
         max_idx = -1
-        max_num = -9999
+        max_num = 0
         i = 0
-        for num in guess[0]:
-            if num > max_num:
+        while i < 10:
+            if guess[i] > max_num:
+                max_num = guess[i]
                 max_idx = i
-                max_num = num
-            i  += 1
+            i += 1
 
-        # Calculate max num offset from avg. If the difference is too low, we can't be certain that it is any number
-        diff = abs(max_num - avg)
-        if diff < 3 or max_idx == -1:
+        # If our probabilities are not high enough or, for some reason, our index is undefined, 
+        # we were unable to determine the number, so we return None.
+        if max_num < 0.3 or max_idx < 0:
             return None
 
         return max_idx
 
     def correct_guess(self, input, correct_answer):
-        # TODO
-        pass
+        if type(correct_answer) != int or correct_answer < 0 or correct_answer > 9:
+            return False
+        if len(input) != 784:
+            return False
+
+        correct_y = np.zeros([10])
+        correct_y[correct_answer] = 1.0
+
+        self.session.run(self.train_step, feed_dict={self.x: [input], self.y_: correct_y})
+        return True
 
 if __name__ == "__main__":
     mnist = MNISTSession("/home/tensorflow/MNIST_data/")
