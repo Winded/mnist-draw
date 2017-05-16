@@ -3,23 +3,50 @@
 <head>
     <title>MNIST draw</title>
 
+    <!--
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+    -->
+
+    <link rel="stylesheet" href="css/style.css"/>
 
     <script type="text/javascript" src="js/bundle.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="container">
-        <div class="page-header">
-            <h1>MNIST draw</h1>
+    <div class="header">
+        MNIST draw
+    </div>
+    <canvas id="paper" class="draw-canvas"></canvas>
+    <div class="footer">
+        <div id="draw-container" class="draw-buttons">
+            <div class="buttons-left">
+                <button id="clear-button" type="button" class="btn btn-red">Clear</button>
+            </div>
+            <div class="result-text">
+                <span id="result-response"></span>
+            </div>
+            <div class="buttons-right">
+                <!--<button id="open-button" type="button" class="btn">Open PNG</button>-->
+                <button id="send-button" type="button" class="btn btn-green">Send</button>
+            </div>
         </div>
-        <canvas id="paper" width="200" height="200" style="border:1px solid #ccc;"></canvas>
-        <div class="btn-group" role="group" aria-label="...">
-            <button id="clear-button" type="button" class="btn btn-default">Clear</button>
-            <button id="open-button" type="button" class="btn btn-default">Open PNG</button>
-            <button id="send-button" type="button" class="btn btn-default">Send</button>
+        <div id="loading-container" class="loading">
+            <img src="img/ring-alt.svg" alt="image">
         </div>
-        <p id="result-container">Result: <b id="result"></b></p>
+        <div id="result-container" class="result-container">
+            <div class="buttons-left">
+                <button id="no-button" type="button" class="btn btn-red">No</button>
+            </div>
+            <div class="result-text">
+                Is it <b id="result"></b>?
+            </div>
+            <div class="buttons-right">
+                <!--<button id="open-button" type="button" class="btn">Open PNG</button>-->
+                <button id="yes-button" type="button" class="btn btn-green">Yes</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

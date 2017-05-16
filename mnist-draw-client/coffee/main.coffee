@@ -3,17 +3,50 @@ $ = require("jquery")
 window.jQuery = $
 bs = require("bootstrap")
 
-resultStrings = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+resultStrings = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+randomStrings = ["a bird", "a plane", "superman", "your bad drawing"]
+
+ratingEnabled = false
+lastMnistData = []
+
+imageToMnistData = (img_data) ->
+    mnist_data = []
+    i = 0
+    while i < img_data.length
+        alpha = img_data[i + 3]
+        mnist_data.push(alpha / 255)
+        i += 4
+    return mnist_data
+
+sendData = (data) ->
+    new Promise (success, failure) ->
+        xhr = new XMLHttpRequest()
+        xhr.open("POST", "http://192.168.0.13:8000/", true)
+        xhr.setRequestHeader("Content-type", "application/json")
+        xhr.onreadystatechange = () ->
+            if xhr.readyState == 4
+                json = JSON.parse(xhr.responseText)
+                if xhr.status == 200
+                    success(json.result)
+                else
+                    failure(json.message)
+        xhr.send(data)
 
 $(document).ready () ->
-    canvas = new fabric.Canvas("paper", isDrawingMode: true)
-    canvas.freeDrawingBrush.width = 15
+    canvasCtx = $("#paper")[0].getContext("2d")
+    canvasCtx.canvas.width = Math.min(document.documentElement.clientWidth, 500);
+    canvasCtx.canvas.height = canvasCtx.canvas.width;
 
+    canvas = new fabric.Canvas("paper", isDrawingMode: true)
+    canvas.freeDrawingBrush.width = Math.ceil(canvasCtx.canvas.width / 20)
+
+    $("#draw-container").show()
+    $("#loading-container").hide()
     $("#result-container").hide()
 
     $("#clear-button").click () ->
         canvas.clear()
-        $("#result-container").hide()
+        $("#result-response").text("")
 
     $("#open-button").click () ->
         if not window.localStorage?
@@ -22,11 +55,35 @@ $(document).ready () ->
         url = canvas.toDataURLWithMultiplier("png", 28 / 200)
         window.open(url)
 
+    $("#yes-button").click () ->
+        $("#draw-container").show()
+        $("#loading-container").hide()
+        $("#result-container").hide()
+        if ratingEnabled
+            $("#result-response").text("I knew it!")
+            sendData(JSON.stringify({data: lastMnistData, correct: true}))
+        else
+            $("#result-response").text("")
+
+    $("#no-button").click () ->
+        $("#draw-container").show()
+        $("#loading-container").hide()
+        $("#result-container").hide()
+        if ratingEnabled
+            $("#result-response").text("Ok :( Will try better next time")
+            sendData(JSON.stringify({data: lastMnistData, correct: false}))
+        else
+            $("#result-response").text("")
+
     $("#send-button").click () ->
         if not window.localStorage?
             alert("Unfortunately, your browser is not supported")
             return
         url = canvas.toDataURLWithMultiplier("png", 28 / 200)
+
+        $("#draw-container").hide()
+        $("#loading-container").show()
+        $("#result-container").hide()
 
         new Promise (success, failure) ->
             c = document.createElement("canvas")
@@ -42,15 +99,11 @@ $(document).ready () ->
             img_data = c.ctx.getImageData(0, 0, 28, 28).data
             if not img_data?
                 failure("Failed to load image data")
-            mnist_data = []
-            i = 0
-            while i < img_data.length
-                alpha = img_data[i + 3]
-                mnist_data.push(alpha / 255)
-                i += 4
-            return mnist_data
+            return imageToMnistData(img_data)
         .then (mnist) ->
             data = JSON.stringify(mnist)
+            console.log(data)
+            lastMnistData = data
             new Promise (success, failure) ->
                 xhr = new XMLHttpRequest()
                 xhr.open("POST", "http://192.168.0.13:8000/", true)
@@ -64,10 +117,17 @@ $(document).ready () ->
                             failure(json.message)
                 xhr.send(data)
         .then (result) ->
+            $("#draw-container").hide()
+            $("#loading-container").hide()
             $("#result-container").show()
             if result?
                 $("#result").text(resultStrings[result])
+                ratingEnabled = true
             else
-                $("#result").text("Not a number. This AI isn't the brightest, fyi. Your drawing may also suck.")
+                $("#result").text(randomStrings[Math.floor(Math.random() * randomStrings.length)])
+                ratingEnabled = false
         .catch (error) ->
-            alert(error)
+            $("#draw-container").show()
+            $("#loading-container").hide()
+            $("#result-container").hide()
+            alert("An error occurred: #{error}")

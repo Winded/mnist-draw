@@ -24,7 +24,26 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         result = None
         try:
             data = json.loads(jdata)
-            result = self.server.mnist.guess_number(data)
+
+            if type(data) == list:
+                result = self.server.mnist.guess_number(data)
+
+                self.send_response(200)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+
+                self.wfile.write(json.dumps({"result": result}))
+            elif "correct" in data:
+                # TODO
+                self.send_response(200)
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True}))
+
         except ValueError:
             self.send_response(500)
             self.send_header("Content-type", "application/json")
@@ -32,14 +51,6 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             jdata = json.dumps({"message": "Failed to parse input data"})
             self.wfile.write(jdata)
             return
-
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-        self.send_header("Content-type", "application/json")
-        self.end_headers()
-
-        self.wfile.write(json.dumps({"result": result}))
 
     def do_OPTIONS(self):
         self.send_response(200)
