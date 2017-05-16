@@ -38,12 +38,14 @@ body {
 }
 .buttons-left {
     position: fixed;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
+    bottom: 10px;
     left: 10px;
 }
 .buttons-right {
     position: fixed;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
+    bottom: 10px;
     right: 10px;
 }
 

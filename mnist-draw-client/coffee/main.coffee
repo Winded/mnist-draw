@@ -59,6 +59,7 @@ $(document).ready () ->
         $("#draw-container").show()
         $("#loading-container").hide()
         $("#result-container").hide()
+        $("#footer").css("height", "60px")
         if ratingEnabled
             $("#result-response").text("I knew it!")
             sendData(JSON.stringify({data: lastMnistData, correct: true}))
@@ -69,8 +70,9 @@ $(document).ready () ->
         $("#draw-container").show()
         $("#loading-container").hide()
         $("#result-container").hide()
+        $("#footer").css("height", "60px")
         if ratingEnabled
-            $("#result-response").text("Ok :( Will try better next time")
+            $("#result-response").text("Ok :(")
             sendData(JSON.stringify({data: lastMnistData, correct: false}))
         else
             $("#result-response").text("")
@@ -84,6 +86,7 @@ $(document).ready () ->
         $("#draw-container").hide()
         $("#loading-container").show()
         $("#result-container").hide()
+        $("#footer").css("height", "60px")
 
         new Promise (success, failure) ->
             c = document.createElement("canvas")
@@ -120,6 +123,7 @@ $(document).ready () ->
             $("#draw-container").hide()
             $("#loading-container").hide()
             $("#result-container").show()
+            $("#footer").css("height", "120px")
             if result?
                 $("#result").text(resultStrings[result])
                 ratingEnabled = true
@@ -130,4 +134,5 @@ $(document).ready () ->
             $("#draw-container").show()
             $("#loading-container").hide()
             $("#result-container").hide()
+            $("#footer").css("height", "60px")
             alert("An error occurred: #{error}")
