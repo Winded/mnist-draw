@@ -9,6 +9,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
         self.send_header("Content-type", "application/json")
         self.end_headers()
+        self.wfile.write("")
 
     def do_GET(self):
         self.send_response(403)
@@ -57,6 +58,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
         self.end_headers()
+        self.wfile.write("")
 
 if __name__ == "__main__":
     print("Creating and training MNIST session...")

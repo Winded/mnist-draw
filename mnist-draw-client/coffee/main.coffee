@@ -38,7 +38,7 @@ $(document).ready () ->
     canvasCtx.canvas.height = canvasCtx.canvas.width;
 
     canvas = new fabric.Canvas("paper", isDrawingMode: true)
-    canvas.freeDrawingBrush.width = Math.ceil(canvasCtx.canvas.width / 20)
+    canvas.freeDrawingBrush.width = 30
 
     $("#draw-container").show()
     $("#loading-container").hide()
